@@ -2,25 +2,18 @@
 
 Version: 1.0
 Author: Project Owner  
-Last Updated: 2025-10-16
+Last Updated: 2025-10-18
 
 ## 1. Project Vision
 
 SolveOS helps small service-oriented businesses manage orders, customers, and daily operations through a single unified interface. It replaces spreadsheets with a simple yet powerful platform for managing service orders by tracking progress, analysing performance, and simplifying workflow. Built-in notifications and reporting dashboards keep both staff and customers informed every step of the way.
 
-## 2. Key Objectives
 
-- OBJ-01:
-- OBJ-02:
-- OBJ-03:
-- OBJ-04:
-- OBJ-05:
-
-## 3. Onboarding Experience
+## 2. Onboarding Experience
 
 As a user i want to be able to create a new order as soon as a client walks in the door. I have a dashboard that allows me to open a new order window that i can fill in the with the client and item information. The system should allow me to search for existing user or create a new one in case an existing one isn't found. When creating a new client we should store its name, fiscal number, phone number and email. After we start adding items into the order and for each item there's a service associated. Items have a name and get their initial state of received. Services have different categories: Service level is mandatory and has three options Standard, Extra and Premium. There's additional services that can be added like whitening, suede treatment and painting. All items should be cleaned within 10 business days and there's and urgency services that allows items to be completed within 24h, 48h or 5 days. Each of these services have their fixed but configurable price. After all the items have been added and the a client has been associated then the order can be created. As the order is created all the services across the different items should be added up to be displayed as the order total. All orders start in the Received state and should go to an order dashboard where they are showed starting from the oldest one with sorting and filtering options. In the work dashboard it should show all items also with filtering and sorting abilities and allow the worker to view the services associated with each item and start work on them which moves the state from received to in progress. When the first item in an order transitions state the order itself should also transition state to in progress. The worker should be able to trasition items between states and when all the items in the order are ready the order itself moves into the ready state. The same should be true for the delivered state and in the worker should be able to set the full order as delivered as well, saving time on pressing each item individually.
 
-## 4. Business Requirements
+## 3. Business Requirements
 
 ### A. Orders
 
@@ -87,7 +80,7 @@ As a user i want to be able to create a new order as soon as a client walks in t
 
 
 
-## 5. Architecture Diagram
+## 4. Architecture Diagram
 
 ```plantuml
 @startuml Component Diagram
@@ -108,11 +101,11 @@ package "Backend" {
     [Order Management System] as OMS
     [Customer Management] as CM
     [State Engine] as SE
-    [Communication Engine] as CE
     note right: FastAPI + transitions\nHandles orders, customers, state transitions, notifications
 }
 
-package "Integration Layer" {
+package "Integration" {
+    [Communication Engine] as CE
     [Adapter Package] as AP
     note right: Pluggable adapters for SMS/email providers\nFuture integrations (e.g., payment gateways, external APIs)
 }
@@ -137,7 +130,7 @@ CM --> DB : CRUD Operations
 @enduml
 ```
 
-## 6. Tech Stack
+## 5. Tech Stack
 
 Recommended (selected) tech stack for SolveOS
 
