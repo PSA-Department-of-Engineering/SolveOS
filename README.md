@@ -8,12 +8,7 @@ Last Updated: 2025-10-18
 
 SolveOS helps small service-oriented businesses manage orders, customers, and daily operations through a single unified interface. It replaces spreadsheets with a simple yet powerful platform for managing service orders by tracking progress, analysing performance, and simplifying workflow. Built-in notifications and reporting dashboards keep both staff and customers informed every step of the way.
 
-
-## 2. Onboarding Experience
-
-As a user i want to be able to create a new order as soon as a client walks in the door. I have a dashboard that allows me to open a new order window that i can fill in the with the client and item information. The system should allow me to search for existing user or create a new one in case an existing one isn't found. When creating a new client we should store its name, fiscal number, phone number and email. After we start adding items into the order and for each item there's a service associated. Items have a name and get their initial state of received. Services have different categories: Service level is mandatory and has three options Standard, Extra and Premium. There's additional services that can be added like whitening, suede treatment and painting. All items should be cleaned within 10 business days and there's and urgency services that allows items to be completed within 24h, 48h or 5 days. Each of these services have their fixed but configurable price. After all the items have been added and the a client has been associated then the order can be created. As the order is created all the services across the different items should be added up to be displayed as the order total. All orders start in the Received state and should go to an order dashboard where they are showed starting from the oldest one with sorting and filtering options. In the work dashboard it should show all items also with filtering and sorting abilities and allow the worker to view the services associated with each item and start work on them which moves the state from received to in progress. When the first item in an order transitions state the order itself should also transition state to in progress. The worker should be able to trasition items between states and when all the items in the order are ready the order itself moves into the ready state. The same should be true for the delivered state and in the worker should be able to set the full order as delivered as well, saving time on pressing each item individually.
-
-## 3. Business Requirements
+## 2. Business Requirements
 
 ### A. Orders
 
@@ -78,65 +73,71 @@ As a user i want to be able to create a new order as soon as a client walks in t
 | F04 | The system shall work smoothly on desktop and tablet screens. |
 | F05 | The system shall provide a summary dashboard for showing total orders, revenue, and efficiency. |
 
+## 2. Example Journey
 
+When a customer walks in, staff can quickly create a new order from the dashboard. The new-order form lets them search for an existing customer or add a new one (name, fiscal number/NIF, phone and email). An order contains one or more items; each item has a name and an initial state of "Received." Services are attached to items and include:
 
-## 4. Architecture Diagram
+- Service level (required): Standard, Extra, Premium.
+- Optional add-ons: whitening, suede treatment, painting.
+- Urgency modifiers: 24 hours, 48 hours, 5 days.
+- Default turnaround: 10 business days (unless an urgency modifier is applied).
+
+Each service and modifier has a configurable fixed price. When an order is created, the system calculates the order total by summing the prices of all services across every item.
+
+Orders start in the Received state and appear in the Orders dashboard sorted oldest-first, with filtering and search by customer, date, or status. The Work dashboard lists individual items (also with filtering and sorting) and shows each item's services.
+
+A worker can change an item’s status (Received → In Progress → Ready → Delivered). When the first item in an order moves to In Progress, the order state becomes In Progress. When all items are Ready, the order becomes Ready; when all items are Delivered, the order becomes Delivered. To save time, a worker may also mark the entire order as Delivered in a single action.
+
+State changes should be timestamped and visible in the order details (see requirement A07). The workflow should make it easy to track progress at both the order and item level while keeping totals and customer information accurate and up to date.
+
+## 3. Architecture Diagram
 
 ```plantuml
 @startuml Component Diagram
-left to right direction
-skinparam packageStyle rect
+skinparam linetype polyline
 
 title SolveOS Component Diagram
 
 package "Frontend" {
-    [Order Journey UI] as OJUI
-    [Detailed View UI] as DVUI
-    [Clients UI] as CUI
-    [Reporting UI] as RUI
-    note right: React + TypeScript + MUI\nDashboards for orders, clients, reporting
+    [Login Page <<React + MUI>>] as Login
+    package "Authenticated Page" <<React + MUI>> as Auth {
+      [Order Journey UI] as OJUI
+      [Detailed View UI] as DVUI
+      [Clients UI] as CUI
+      [Reporting UI] as RUI
+    }
 }
 
 package "Backend" {
-    [Order Management System] as OMS
-    [Customer Management] as CM
-    [State Engine] as SE
-    note right: FastAPI + transitions\nHandles orders, customers, state transitions, notifications
+    [Order Management Service] <<FastAPI>> as OMS
+    [Customer Management Service] <<FastAPI>> as CM
+    [State Engine] <<FastAPI + Transitions>> as SE
+    [Communication Service] <<FastAPI>> as CE
 }
 
 package "Integration" {
-    [Communication Engine] as CE
-    [Adapter Package] as AP
-    note right: Pluggable adapters for SMS/email providers\nFuture integrations (e.g., payment gateways, external APIs)
+    [AWS SES Gateway] <<SMTP>> as SES #LightBlue
 }
 
-package "Persistence" {
-    [Relational Database] as DB
-    note right: PostgreSQL\nStores orders, customers, services, audit logs
+database "Persistence" {
+    [Relational Database] <<PostgreSQL>> as DB
 }
 
-OJUI --> OMS : Create/Update Orders
-DVUI --> OMS : View Order Details
-CUI --> CM : Manage Customers
-RUI --> OMS : Fetch Metrics
-RUI --> CM : Fetch Customer Data
-
-OMS --> SE : State Transitions
-OMS --> CE : Send Notifications
-CE --> AP : Use Adapters for External Services
-OMS --> DB : CRUD Operations
-CM --> DB : CRUD Operations
+Login -down-> Auth
+Frontend ---down-> Backend
+Backend -right-> Integration
+Backend ---down-> Persistence
 
 @enduml
 ```
 
 ## 5. Tech Stack
 
-Recommended (selected) tech stack for SolveOS
+- **Frontend**: React with TypeScript and Material UI (MUI)
+  - Strong typing, shared types with backend, accessible components.
 
-- Frontend: React with TypeScript and Material UI (MUI)
-  - Rationale: strong typing, shared DTOs/types with backend, mature component library with accessibility and theming support.
-- Backend: Python with FastAPI and transitions
-  - Rationale: async-first performance, Pydantic for data validation, automatic OpenAPI generation, and strong ecosystem for data/analytics.
-- Database: PostgreSQL
-  - Use: relational persistence for orders, items, customers, and audit logs. Use Alembic for migrations and implement soft-delete patterns.
+- **Backend**: Python with FastAPI and transitions
+  - Async performance, auto API docs, state machine for workflows.
+
+- **Database**: PostgreSQL
+  - Relational storage for orders, customers, audit logs. Alembic migrations, soft deletes.
