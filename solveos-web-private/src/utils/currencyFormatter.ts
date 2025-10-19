@@ -1,6 +1,3 @@
-/**
- * Formats a number as currency
- */
 export function formatCurrency(
     amount: number,
     currency: string = "EUR",

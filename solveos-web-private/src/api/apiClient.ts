@@ -1,27 +1,17 @@
 import { config } from "../config/appConfig";
+import { handleApiError } from "./errors";
 
-/**
- * Base API client configuration
- */
 export interface ApiClientConfig {
     baseUrl: string;
     headers?: Record<string, string>;
 }
 
-/**
- * Creates headers for API requests
- * Authentication is handled via HttpOnly cookie (solveos_token)
- */
 export function getHeaders(): Record<string, string> {
     return {
         "Content-Type": "application/json",
     };
 }
 
-/**
- * Base API client
- * IMPORTANT: Uses credentials: 'include' to send HttpOnly cookies
- */
 export const apiClient = {
     baseUrl: config.apiBaseUrl,
 
@@ -37,13 +27,13 @@ export const apiClient = {
         });
 
         if (!response.ok) {
-            // Handle 401 Unauthorized - redirect to login
+            // Handle 401 Unauthorized - redirect to login before throwing
             if (response.status === 401) {
                 console.error("Authentication failed, redirecting to login...");
                 window.location.href = config.loginPageUrl;
-                throw new Error("Authentication required");
             }
-            throw new Error(`API Error: ${response.statusText}`);
+            // Throws proper error type based on status code
+            await handleApiError(response, endpoint);
         }
 
         return response.json();
