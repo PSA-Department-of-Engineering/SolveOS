@@ -46,12 +46,6 @@ npm install && npm run dev
 
 Application runs on `http://localhost:5173`
 
-### Build
-
-```bash
-npm run build
-```
-
 ## User Journey
 
 1. User enters email and password on login page
