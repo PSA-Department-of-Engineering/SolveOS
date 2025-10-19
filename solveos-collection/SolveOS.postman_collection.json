@@ -1,0 +1,66 @@
+{
+	"info": {
+		"_postman_id": "9a28286e-0e64-476a-878d-8b023b519f1c",
+		"name": "SolveOS Auth API",
+		"description": "Quick requests to test /api/auth/token",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "49379922",
+		"_collection_link": "https://rafaelgpires-507075.postman.co/workspace/Rafael-Pires's-Workspace~67ab93e2-b972-42dd-8a4d-111d8916ab52/collection/49379922-9a28286e-0e64-476a-878d-8b023b519f1c?action=share&source=collection_link&creator=49379922"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Status is 200', function () {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"const json = pm.response.json();",
+							"pm.environment.set('access_token', json.access_token || '');",
+							"pm.environment.set('token_type', json.token_type || 'bearer');",
+							"pm.environment.set('refresh_token', json.refresh_token || '');",
+							"pm.environment.set('expires_in', json.expires_in || '');"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"user@example.com\",\n  \"password\": \"password123\",\n  \"grant_type\": \"password\",\n  \"scope\": \"\",\n  \"client_id\": \"\",\n  \"client_secret\": \"\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/auth/token",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"token"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000"
+		}
+	]
+}
