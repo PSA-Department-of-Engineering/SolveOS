@@ -81,19 +81,7 @@ The API will be available at:
 
 ### Configuration
 
-Create `.env` file (copy from `.env.example`):
-
-```env
-APP_NAME=SolveOS API
-APP_VERSION=1.0.0
-DEBUG=True
-
-SECRET_KEY=your-super-secret-key-min-32-chars
-ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=30
-
-CORS_ORIGINS=["http://localhost:5173","http://localhost:3000"]
-```
+Create `.env` file (copy from `.env.example`).
 
 ## Authentication
 
