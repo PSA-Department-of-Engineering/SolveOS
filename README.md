@@ -132,28 +132,7 @@ Backend ---down-> Persistence
 @enduml
 ```
 
-## 4. Backend Service
-
-The backend is implemented as a modular monolith using **Clean Architecture** (Hexagonal Pattern).
-
-### Quick Start
-
-```powershell
-cd solveos-service
-py -m pip install -r requirements.txt
-py -m fastapi dev app/main.py
-```
-
-**API Documentation**:
-- Swagger UI: http://127.0.0.1:8000/docs
-- OpenAPI Spec: http://127.0.0.1:8000/openapi.json
-
-**Test Credentials**:
-- Email: `admin@solveos.com` / Password: `secret`
-
-For detailed architecture, API reference, and development guide, see [solveos-service/README.md](solveos-service/README.md)
-
-## 5. Tech Stack
+## 4. Tech Stack
 
 ### Frontend
 - **Framework**: React 18+ with TypeScript
