@@ -1,9 +1,5 @@
 import { createTheme } from '@mui/material/styles'
 
-/**
- * Central theme configuration for the SolveOS application.
- * Defines colors, typography, spacing, and component overrides.
- */
 export const ApplicationTheme = createTheme({
     palette: {
         primary: {

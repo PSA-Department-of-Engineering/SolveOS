@@ -2,9 +2,6 @@ import { TextField, InputAdornment, IconButton } from '@mui/material'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 import type { PasswordFieldProps } from './PasswordFieldProps'
 
-/**
- * Reusable password input field with visibility toggle.
- */
 export function PasswordField({
     value,
     error,

@@ -1,10 +1,6 @@
 import { useState } from 'react'
 import { authenticateUser } from '../services/authentication/authenticateUser'
 
-/**
- * Hook for managing login form submission.
- * Handles authentication API calls and loading state.
- */
 export function useLoginSubmission() {
     const [isSubmitting, setIsSubmitting] = useState(false)
 

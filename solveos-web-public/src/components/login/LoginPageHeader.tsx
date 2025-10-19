@@ -2,10 +2,6 @@ import { Box, Typography } from '@mui/material'
 import { BusinessLogo } from '../shared/BusinessLogo'
 import { loginPageHeaderStyles } from './LoginPageHeaderStyles'
 
-/**
- * Header section of the login page.
- * Displays branding and welcome message.
- */
 export function LoginPageHeader() {
     return (
         <Box sx={loginPageHeaderStyles.container}>

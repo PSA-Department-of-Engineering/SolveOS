@@ -4,10 +4,6 @@ import { PasswordField } from '../shared/PasswordField'
 import type { LoginFormFieldsProps } from './LoginFormFieldsProps'
 import { loginFormFieldsStyles } from './LoginFormFieldsStyles'
 
-/**
- * Input fields for the login form.
- * Handles email and password entry.
- */
 export function LoginFormFields({
     email,
     password,

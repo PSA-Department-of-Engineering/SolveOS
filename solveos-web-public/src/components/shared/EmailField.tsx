@@ -1,9 +1,6 @@
 import { TextField } from '@mui/material'
 import type { EmailFieldProps } from './EmailFieldProps'
 
-/**
- * Reusable email input field with validation.
- */
 export function EmailField({ value, error, onChange }: EmailFieldProps) {
     return (
         <TextField
