@@ -61,10 +61,10 @@ npm run build
 ## User Journey
 
 1. User enters email and password on login page
-2. Frontend sends request to FastAPI backend (`/api/auth/token`)
-3. Backend validates credentials and returns JWT token
-4. Frontend stores token in localStorage
-5. User is redirected to authenticated app
+2. Frontend sends request to FastAPI backend (`/api/v1/auth/login`) with `credentials: 'include'`
+3. Backend validates credentials, returns JWT token in JSON response, and sets `solveos_token` HttpOnly cookie
+4. Frontend redirects to authenticated app (`VITE_REDIRECT_AFTER_LOGIN`)
+5. Cookie is automatically sent with all subsequent requests to the same hostname
 
 ### Technical Considerations
 

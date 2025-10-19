@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from fastapi.security import OAuth2PasswordRequestForm
 
 from app.modules.authentication.application.commands.login_user import (
@@ -18,6 +18,7 @@ from app.modules.authentication.adapters.inbound.dependencies import (
     get_current_user_handler,
     get_current_user_token,
 )
+from app.shared.infrastructure.config import get_settings
 
 router = APIRouter(tags=["Authentication"])
 
@@ -27,11 +28,10 @@ router = APIRouter(tags=["Authentication"])
     response_model=TokenResponse,
     summary="Login to get access token",
     description="""
-    OAuth2 compatible token login.
+    OAuth2 compatible token login with HttpOnly cookie.
     
-    Use this endpoint to authenticate and receive a JWT access token.
-    The token should be included in subsequent requests using the Authorization header:
-    `Authorization: Bearer <token>`
+    Authenticates the user and sets an HttpOnly cookie named `solveos_token`.
+    The cookie is automatically included in subsequent requests to the same hostname.
     
     **Default test users:**
     - Email: admin@solveos.com, Password: secret
@@ -39,7 +39,7 @@ router = APIRouter(tags=["Authentication"])
     """,
     responses={
         200: {
-            "description": "Successful authentication",
+            "description": "Successful authentication - cookie set",
             "content": {
                 "application/json": {
                     "example": {
@@ -54,19 +54,33 @@ router = APIRouter(tags=["Authentication"])
     }
 )
 async def login(
+    response: Response,
     form_data: OAuth2PasswordRequestForm = Depends(),
     handler: LoginUserHandler = Depends(get_login_handler)
 ) -> TokenResponse:
     """
-    OAuth2 password flow login endpoint.
-    FastAPI will automatically generate OpenAPI spec with OAuth2 schema.
+    OAuth2 password flow login endpoint with HttpOnly cookie.
+    Sets a secure, HttpOnly cookie named 'solveos_token' on successful authentication.
     """
+    settings = get_settings()
+    
     try:
         command = LoginCommand(
             email=form_data.username,  # OAuth2 uses 'username' field for email
             password=form_data.password
         )
         result = handler.handle(command)
+        
+        # Set HttpOnly cookie for stateless JWT authentication
+        response.set_cookie(
+            key="solveos_token",
+            value=result.access_token,
+            httponly=True,
+            secure=not settings.DEBUG,  # True in production (HTTPS), False in dev
+            samesite="lax",
+            max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+            path="/",
+        )
         
         return TokenResponse(
             access_token=result.access_token,
@@ -92,7 +106,7 @@ async def login(
     description="""
     Get information about the currently authenticated user.
     
-    Requires a valid JWT token in the Authorization header.
+    Requires a valid JWT token in the solveos_token cookie (automatically sent by browser).
     """,
     responses={
         200: {
@@ -116,7 +130,7 @@ async def get_current_user(
 ) -> UserResponse:
     """
     Get current authenticated user.
-    Protected endpoint - requires valid JWT token.
+    Protected endpoint - requires valid JWT token in cookie.
     """
     try:
         query = GetCurrentUserQuery(token=token)
@@ -133,3 +147,38 @@ async def get_current_user(
             detail=str(e),
             headers={"WWW-Authenticate": "Bearer"},
         )
+
+
+@router.post(
+    "/logout",
+    summary="Logout and clear authentication cookie",
+    description="""
+    Logout the current user by clearing the authentication cookie.
+    
+    This endpoint clears the `solveos_token` cookie by setting it with an expired date.
+    """,
+    responses={
+        200: {
+            "description": "Successfully logged out",
+            "content": {
+                "application/json": {
+                    "example": {"detail": "Successfully logged out"}
+                }
+            }
+        }
+    }
+)
+async def logout(response: Response) -> dict[str, str]:
+    """
+    Logout endpoint that clears the authentication cookie.
+    """
+    response.set_cookie(
+        key="solveos_token",
+        value="",
+        httponly=True,
+        secure=not get_settings().DEBUG,
+        samesite="lax",
+        max_age=0,  # Expire immediately
+        path="/",
+    )
+    return {"detail": "Successfully logged out"}

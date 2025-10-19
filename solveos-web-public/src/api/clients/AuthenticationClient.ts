@@ -20,6 +20,7 @@ export class AuthenticationClient implements IAuthenticationClient {
 
         const response = await fetch(`${this.baseUrl}${this.tokenEndpoint}`, {
             method: 'POST',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
             },

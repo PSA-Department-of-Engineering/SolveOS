@@ -1,5 +1,5 @@
-from fastapi import Depends
-from fastapi.security import OAuth2PasswordBearer
+from fastapi import Depends, HTTPException, status, Cookie
+from typing import Annotated
 
 from app.modules.authentication.application.commands.login_user import LoginUserHandler
 from app.modules.authentication.application.queries.get_current_user import GetCurrentUserHandler
@@ -7,9 +7,6 @@ from app.modules.authentication.adapters.outbound.repositories.in_memory_user_re
 from app.modules.authentication.adapters.outbound.security.bcrypt_password_hasher import BcryptPasswordHasher
 from app.modules.authentication.adapters.outbound.security.jwt_token_generator import JWTTokenGenerator
 from app.shared.infrastructure.config import get_settings
-
-# OAuth2 scheme for Swagger UI
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 
 
 def get_user_repository() -> InMemoryUserRepository:
@@ -57,6 +54,15 @@ def get_current_user_handler(
     )
 
 
-def get_current_user_token(token: str = Depends(oauth2_scheme)) -> str:
-    """Dependency: Extract token from Authorization header"""
-    return token
+def get_current_user_token(solveos_token: Annotated[str | None, Cookie()] = None) -> str:
+    """
+    Dependency: Extract token from solveos_token cookie.
+    Raises 401 if cookie is missing or empty.
+    """
+    if not solveos_token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not authenticated - cookie missing",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return solveos_token
