@@ -1,9 +1,9 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
-import { DashboardPage } from '../pages/DashboardPage'
-import { OrdersPage } from '../pages/OrdersPage'
-import { CustomersPage } from '../pages/CustomersPage'
-import { ReportsPage } from '../pages/ReportsPage'
-import { SettingsPage } from '../pages/SettingsPage'
+import { Routes, Route, Navigate } from "react-router-dom";
+import { DashboardPage } from "../pages/DashboardPage";
+import { OrdersPage } from "../pages/OrdersPage";
+import { CustomersPage } from "../pages/CustomersPage";
+import { ReportsPage } from "../pages/ReportsPage";
+import { SettingsPage } from "../pages/SettingsPage";
 
 export function AppRouter() {
     return (
@@ -15,5 +15,5 @@ export function AppRouter() {
             <Route path="/reports" element={<ReportsPage />} />
             <Route path="/settings" element={<SettingsPage />} />
         </Routes>
-    )
+    );
 }

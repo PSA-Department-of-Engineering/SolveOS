@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { AuthenticationClient } from '../api/clients/AuthenticationClient';
-import type { UserDTO } from '../api/models/UserDTO';
+import { useState, useEffect } from "react";
+import { AuthenticationClient } from "../api/clients/AuthenticationClient";
+import type { UserDTO } from "../api/models/UserDTO";
 
 /**
  * Hook to fetch and manage the current authenticated user.
@@ -20,9 +20,10 @@ export function useAuth() {
                 setUser(userData);
                 setError(null);
             } catch (err) {
-                const errorMessage = err instanceof Error ? err.message : 'Failed to fetch user';
+                const errorMessage =
+                    err instanceof Error ? err.message : "Failed to fetch user";
                 setError(errorMessage);
-                console.error('Failed to fetch current user:', err);
+                console.error("Failed to fetch current user:", err);
             } finally {
                 setLoading(false);
             }

@@ -1,11 +1,11 @@
-import { config } from '../config/appConfig'
+import { config } from "../config/appConfig";
 
 /**
  * Base API client configuration
  */
 export interface ApiClientConfig {
-    baseUrl: string
-    headers?: Record<string, string>
+    baseUrl: string;
+    headers?: Record<string, string>;
 }
 
 /**
@@ -14,8 +14,8 @@ export interface ApiClientConfig {
  */
 export function getHeaders(): Record<string, string> {
     return {
-        'Content-Type': 'application/json',
-    }
+        "Content-Type": "application/json",
+    };
 }
 
 /**
@@ -24,53 +24,50 @@ export function getHeaders(): Record<string, string> {
  */
 export const apiClient = {
     baseUrl: config.apiBaseUrl,
-    
-    async request<T>(
-        endpoint: string,
-        options: RequestInit = {}
-    ): Promise<T> {
-        const url = `${this.baseUrl}${endpoint}`
+
+    async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+        const url = `${this.baseUrl}${endpoint}`;
         const response = await fetch(url, {
             ...options,
-            credentials: 'include', // CRITICAL: Include cookies for authentication
+            credentials: "include", // CRITICAL: Include cookies for authentication
             headers: {
                 ...getHeaders(),
                 ...options.headers,
             },
-        })
+        });
 
         if (!response.ok) {
             // Handle 401 Unauthorized - redirect to login
             if (response.status === 401) {
-                console.error('Authentication failed, redirecting to login...')
-                window.location.href = config.loginPageUrl
-                throw new Error('Authentication required')
+                console.error("Authentication failed, redirecting to login...");
+                window.location.href = config.loginPageUrl;
+                throw new Error("Authentication required");
             }
-            throw new Error(`API Error: ${response.statusText}`)
+            throw new Error(`API Error: ${response.statusText}`);
         }
 
-        return response.json()
+        return response.json();
     },
 
     async get<T>(endpoint: string): Promise<T> {
-        return this.request<T>(endpoint, { method: 'GET' })
+        return this.request<T>(endpoint, { method: "GET" });
     },
 
     async post<T>(endpoint: string, data: unknown): Promise<T> {
         return this.request<T>(endpoint, {
-            method: 'POST',
+            method: "POST",
             body: JSON.stringify(data),
-        })
+        });
     },
 
     async put<T>(endpoint: string, data: unknown): Promise<T> {
         return this.request<T>(endpoint, {
-            method: 'PUT',
+            method: "PUT",
             body: JSON.stringify(data),
-        })
+        });
     },
 
     async delete<T>(endpoint: string): Promise<T> {
-        return this.request<T>(endpoint, { method: 'DELETE' })
+        return this.request<T>(endpoint, { method: "DELETE" });
     },
-}
+};

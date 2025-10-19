@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react'
+import type { ReactNode } from "react";
 
 export interface MainLayoutProps {
-    children: ReactNode
+    children: ReactNode;
 }

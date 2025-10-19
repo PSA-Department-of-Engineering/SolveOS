@@ -1,8 +1,8 @@
-import Container from '@mui/material/Container'
-import Typography from '@mui/material/Typography'
-import Button from '@mui/material/Button'
-import AddIcon from '@mui/icons-material/Add'
-import { MainLayout } from '../layouts/MainLayout'
+import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import AddIcon from "@mui/icons-material/Add";
+import { MainLayout } from "../layouts/MainLayout";
 
 export function CustomersPage() {
     return (
@@ -23,5 +23,5 @@ export function CustomersPage() {
                 </Typography>
             </Container>
         </MainLayout>
-    )
+    );
 }

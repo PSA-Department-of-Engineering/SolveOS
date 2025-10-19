@@ -1,5 +1,5 @@
-import { config } from '../../config/appConfig';
-import type { UserDTO } from '../models/UserDTO';
+import { config } from "../../config/appConfig";
+import type { UserDTO } from "../models/UserDTO";
 
 /**
  * Authentication client for the private/authenticated application
@@ -8,10 +8,7 @@ export class AuthenticationClient {
     private readonly baseUrl: string;
     private readonly meEndpoint: string;
 
-    constructor(
-        baseUrl?: string,
-        meEndpoint?: string
-    ) {
+    constructor(baseUrl?: string, meEndpoint?: string) {
         this.baseUrl = baseUrl || config.apiBaseUrl;
         this.meEndpoint = meEndpoint || config.authMeEndpoint;
     }
@@ -24,22 +21,24 @@ export class AuthenticationClient {
      */
     async getCurrentUser(): Promise<UserDTO> {
         const response = await fetch(`${this.baseUrl}${this.meEndpoint}`, {
-            method: 'GET',
-            credentials: 'include', // CRITICAL: Include cookies for authentication
+            method: "GET",
+            credentials: "include", // CRITICAL: Include cookies for authentication
             headers: {
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
             },
         });
 
         if (!response.ok) {
             if (response.status === 401) {
                 // User is not authenticated - redirect to login
-                console.error('Not authenticated, redirecting to login...');
+                console.error("Not authenticated, redirecting to login...");
                 window.location.href = config.loginPageUrl;
-                throw new Error('Authentication required');
+                throw new Error("Authentication required");
             }
-            const error = await response.json().catch(() => ({ detail: 'Failed to fetch user' }));
-            throw new Error(error.detail || 'Failed to fetch user information');
+            const error = await response
+                .json()
+                .catch(() => ({ detail: "Failed to fetch user" }));
+            throw new Error(error.detail || "Failed to fetch user information");
         }
 
         return response.json();

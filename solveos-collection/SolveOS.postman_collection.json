@@ -1,66 +1,223 @@
 {
-	"info": {
-		"_postman_id": "9a28286e-0e64-476a-878d-8b023b519f1c",
-		"name": "SolveOS Auth API",
-		"description": "Quick requests to test /api/auth/token",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "49379922",
-		"_collection_link": "https://rafaelgpires-507075.postman.co/workspace/Rafael-Pires's-Workspace~67ab93e2-b972-42dd-8a4d-111d8916ab52/collection/49379922-9a28286e-0e64-476a-878d-8b023b519f1c?action=share&source=collection_link&creator=49379922"
-	},
-	"item": [
-		{
-			"name": "Login",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test('Status is 200', function () {",
-							"  pm.response.to.have.status(200);",
-							"});",
-							"",
-							"const json = pm.response.json();",
-							"pm.environment.set('access_token', json.access_token || '');",
-							"pm.environment.set('token_type', json.token_type || 'bearer');",
-							"pm.environment.set('refresh_token', json.refresh_token || '');",
-							"pm.environment.set('expires_in', json.expires_in || '');"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"username\": \"user@example.com\",\n  \"password\": \"password123\",\n  \"grant_type\": \"password\",\n  \"scope\": \"\",\n  \"client_id\": \"\",\n  \"client_secret\": \"\"\n}"
-				},
-				"url": {
-					"raw": "{{baseUrl}}/api/auth/token",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"api",
-						"auth",
-						"token"
-					]
-				}
-			},
-			"response": []
-		}
-	],
-	"variable": [
-		{
-			"key": "baseUrl",
-			"value": "http://localhost:3000"
-		}
-	]
+  "info": {
+    "name": "SolveOS API",
+    "_postman_id": "b7bf5a2e-6e1a-4b9a-b4b5-20251019135753",
+    "description": "ServiceOS API with OAuth2 password flow (token endpoint sets HttpOnly cookie).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "GET /health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health"
+              ]
+            },
+            "description": "Check if the API is running and healthy."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Root",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            },
+            "description": "API root endpoint with quick links."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "POST /api/v1/auth/login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "grant_type",
+                  "value": "password",
+                  "type": "text"
+                },
+                {
+                  "key": "username",
+                  "value": "{{username}}",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "{{password}}",
+                  "type": "text"
+                },
+                {
+                  "key": "scope",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "client_id",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "client_secret",
+                  "value": "",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "OAuth2-compatible login. On success, server sets HttpOnly cookie (e.g., `solveos_token`) and returns a JSON body with `access_token`."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Save access_token (if present)",
+                  "pm.test('Status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "try {",
+                  "  var json = pm.response.json();",
+                  "  if (json && json.access_token) {",
+                  "    pm.environment.set('access_token', json.access_token);",
+                  "  }",
+                  "} catch (e) { /* non-JSON or missing token */ }",
+                  "",
+                  "// Save HttpOnly cookie value to env var as a convenience (Postman cookie jar will also store it automatically).",
+                  "var c = pm.cookies.get('solveos_token');",
+                  "if (c) {",
+                  "  pm.environment.set('solveos_token', c);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "GET /api/v1/auth/me",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "me"
+              ]
+            },
+            "description": "Get current user information. Uses cookie auth (HttpOnly) and/or Bearer token if supported."
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// If you prefer cookie header explicitly (in addition to Postman's cookie jar), uncomment the next lines:",
+                  "// if (pm.environment.get('solveos_token')) {",
+                  "//   pm.request.headers.add({key: 'Cookie', value: 'solveos_token=' + pm.environment.get('solveos_token')});",
+                  "// }"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200 or 401', function () {",
+                  "  pm.expect([200,401]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000"
+    },
+    {
+      "key": "username",
+      "value": "admin@solveos.com"
+    },
+    {
+      "key": "password",
+      "value": "changeme"
+    },
+    {
+      "key": "access_token",
+      "value": ""
+    },
+    {
+      "key": "solveos_token",
+      "value": ""
+    }
+  ]
 }

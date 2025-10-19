@@ -1,6 +1,6 @@
-import Container from '@mui/material/Container'
-import Typography from '@mui/material/Typography'
-import { MainLayout } from '../layouts/MainLayout'
+import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
+import { MainLayout } from "../layouts/MainLayout";
 
 export function ReportsPage() {
     return (
@@ -14,5 +14,5 @@ export function ReportsPage() {
                 </Typography>
             </Container>
         </MainLayout>
-    )
+    );
 }
