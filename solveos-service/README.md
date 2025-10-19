@@ -8,23 +8,23 @@ Clean Architecture / Hexagonal (Ports & Adapters)
 
 ```
 ┌──────────────────────────────────────────────────────────┐
-│             Presentation (Inbound Adapters)              │
-│            FastAPI Routes, Pydantic Schemas              │
+│             Inbound Adapters (HTTP Layer)                │
+│      FastAPI Routes, DTOs, Mappers, Exception Handlers   │
 └────────────────────┬─────────────────────────────────────┘
                      │
 ┌────────────────────▼─────────────────────────────────────┐
-│             Application Layer (Use Cases)                │
-│           Commands & Queries (CQRS Pattern)              │
+│          Application Layer (Use Cases & Ports)           │
+│        Use Cases + Port Interfaces (Inbound/Outbound)    │
 └────────────────────┬─────────────────────────────────────┘
                      │
 ┌────────────────────▼─────────────────────────────────────┐
-│            Domain Layer (Business Logic)                 │
-│       Entities, Value Objects, Ports (Interfaces)        │
+│               Domain Layer (Business Logic)              │
+│            Entities, Value Objects, Exceptions           │
 └────────────────────▲─────────────────────────────────────┘
                      │
 ┌────────────────────┴─────────────────────────────────────┐
-│            Infrastructure (Outbound Adapters)            │
-│     Implementations: Database, Security, Notifications   │
+│        Outbound Adapters (Port Implementations)          │
+│          Persistence, External Services, etc.            │
 └──────────────────────────────────────────────────────────┘
 ```
 
@@ -36,28 +36,30 @@ Each business module is self-contained following Clean Architecture:
 
 ```
 modules/
-├── module_name/                        # Bounded context
-│   ├── domain/                         # Core business logic
-│   │   ├── entities/                   # Business objects (e.g. User, Order)
-│   │   ├── ports/                      # Interfaces (contracts)
+├── module_name/                        # Bounded context (e.g., authentication)
+│   ├── di.py                           # Dependency injection configuration
+│   │
+│   ├── domain/                         # Core business logic (pure Python)
+│   │   ├── entities/                   # Business objects (e.g., User)
 │   │   └── exceptions/                 # Domain-specific exceptions
-│   
-│   ├── application/                    # Use cases w/CQRS
-│   │   ├── commands/                   # Write operations
-│   │   ├── queries/                    # Read operations
-│   │   └── dtos/                       # Application data transfer objects
-│   
+│   │
+│   ├── application/                    # Use cases & port interfaces
+│   │   ├── ports/                      # Interfaces (contracts)
+│   │   │   ├── inbound/                # Use case interfaces
+│   │   │   └── outbound/               # Repository/service interfaces
+│   │   └── use_cases/                  # Business logic orchestration
+│   │
 │   └── adapters/                       # External implementations
 │       ├── inbound/                    # Driving adapters (API)
 │       │   └── http/         
-│       │       ├── routes/             # Thin HTTP routers
-│       │       ├── requests/           # HTTP request models
-│       │       ├── responses/          # HTTP response models
-│       │       ├── mappers/            # Layer transformations
-│       │       └── exception_handlers/
-│       └── outbound/                   # Driven adapters (DB, security, etc.)
-│           ├── repositories/           # Storage implementation
-│           └── security/               # Security implementation
+│       │       ├── routes/             # FastAPI routers
+│       │       ├── dtos/               # Request/Response models (Pydantic)
+│       │       ├── mappers/            # Domain ↔DTO transformations
+│       │       ├── utils/              # HTTP utilities (cookies, tokens)
+│       │       └── exception_handlers/ # HTTP exception mappings
+│       │
+│       └── outbound/                   # Driven adapters (persistence, etc.)
+│           └── in_memory/              # In-memory implementation
 ```
 
 ## Quick Start
