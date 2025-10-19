@@ -109,9 +109,9 @@ Authentication uses `python-jose` with JWT tokens implementing OAuth2 password f
 ```
 👤 Admin User
 Email: admin@solveos.com
-Password: secret
+Password: admin
 
-👤 Regular User
+👤 Example User
 Email: user@solveos.com  
-Password: secret
+Password: admin
 ```

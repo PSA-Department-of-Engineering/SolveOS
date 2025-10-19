@@ -3,12 +3,12 @@ import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import LogoutIcon from '@mui/icons-material/Logout'
-import { clearAuthToken } from '../../utils/tokenStorage'
 import { config } from '../../config/appConfig'
 
 export function MainLayoutAppBar() {
     const handleLogout = () => {
-        clearAuthToken()
+        // Clear any client-side state if needed
+        // Note: HttpOnly cookie should be cleared by backend logout endpoint
         window.location.href = config.loginPageUrl
     }
 

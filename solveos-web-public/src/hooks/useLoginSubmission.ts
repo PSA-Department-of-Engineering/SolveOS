@@ -1,28 +1,26 @@
 import { useState } from 'react';
 import { AuthenticationClient } from '../api';
-import { tokenStorage } from '../utils/tokenStorage';
 import { config } from '../config/appConfig';
 
 export function useLoginSubmission() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const authClient = new AuthenticationClient(config.apiBaseUrl, config.authTokenEndpoint);
+    const authClient = new AuthenticationClient(
+        config.apiBaseUrl,
+        config.authLoginEndpoint,
+        config.authMeEndpoint
+    );
 
     const handleLogin = async (email: string, password: string) => {
         setIsSubmitting(true);
         setError(null);
 
         try {
-            const response = await authClient.login(email, password);
+            await authClient.login(email, password);
 
-            // Store tokens
-            tokenStorage.setAccessToken(response.access_token);
-            if (response.refresh_token) {
-                tokenStorage.setRefreshToken(response.refresh_token);
-            }
-
-            console.log('Login successful:', response.user?.email);
+            // Authentication is handled via HttpOnly cookie set by the backend
+            console.log('Login successful, redirecting...');
 
             // Redirect to authenticated application
             window.location.href = config.redirectAfterLogin;

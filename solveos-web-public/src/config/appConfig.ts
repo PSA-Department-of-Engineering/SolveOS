@@ -9,9 +9,14 @@ export const config = {
     apiBaseUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000',
 
     /**
-     * Authentication token endpoint
+     * Authentication login endpoint
      */
-    authTokenEndpoint: import.meta.env.VITE_AUTH_TOKEN_ENDPOINT || '/api/auth/token',
+    authLoginEndpoint: import.meta.env.VITE_AUTH_LOGIN_ENDPOINT || '/api/v1/auth/login',
+
+    /**
+     * Get current user endpoint
+     */
+    authMeEndpoint: import.meta.env.VITE_AUTH_ME_ENDPOINT || '/api/v1/auth/me',
 
     /**
      * Redirect URL after successful login.

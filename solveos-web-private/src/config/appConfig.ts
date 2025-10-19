@@ -9,9 +9,9 @@ export const config = {
     apiBaseUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000',
 
     /**
-     * Authentication token storage key
+     * Get current user endpoint
      */
-    authTokenKey: import.meta.env.VITE_AUTH_TOKEN_KEY || 'solveos_auth_token',
+    authMeEndpoint: import.meta.env.VITE_AUTH_ME_ENDPOINT || '/api/v1/auth/me',
 
     /**
      * Login page URL (public app)

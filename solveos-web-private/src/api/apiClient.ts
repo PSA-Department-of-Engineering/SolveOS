@@ -1,5 +1,4 @@
 import { config } from '../config/appConfig'
-import { getAuthToken } from '../utils/tokenStorage'
 
 /**
  * Base API client configuration
@@ -10,18 +9,18 @@ export interface ApiClientConfig {
 }
 
 /**
- * Creates authenticated headers for API requests
+ * Creates headers for API requests
+ * Authentication is handled via HttpOnly cookie (solveos_token)
  */
-export function getAuthHeaders(): Record<string, string> {
-    const token = getAuthToken()
+export function getHeaders(): Record<string, string> {
     return {
         'Content-Type': 'application/json',
-        ...(token && { Authorization: `Bearer ${token}` }),
     }
 }
 
 /**
  * Base API client
+ * IMPORTANT: Uses credentials: 'include' to send HttpOnly cookies
  */
 export const apiClient = {
     baseUrl: config.apiBaseUrl,
@@ -33,13 +32,20 @@ export const apiClient = {
         const url = `${this.baseUrl}${endpoint}`
         const response = await fetch(url, {
             ...options,
+            credentials: 'include', // CRITICAL: Include cookies for authentication
             headers: {
-                ...getAuthHeaders(),
+                ...getHeaders(),
                 ...options.headers,
             },
         })
 
         if (!response.ok) {
+            // Handle 401 Unauthorized - redirect to login
+            if (response.status === 401) {
+                console.error('Authentication failed, redirecting to login...')
+                window.location.href = config.loginPageUrl
+                throw new Error('Authentication required')
+            }
             throw new Error(`API Error: ${response.statusText}`)
         }
 

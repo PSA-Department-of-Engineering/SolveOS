@@ -1,4 +1,5 @@
 import type { LoginResponseDTO } from './models/LoginResponseDTO';
+import type { UserDTO } from './models/UserDTO';
 
 export interface IAuthenticationClient {
     /**
@@ -8,4 +9,10 @@ export interface IAuthenticationClient {
      * @returns Promise resolving to authentication response
      */
     login(email: string, password: string): Promise<LoginResponseDTO>;
+
+    /**
+     * Retrieves information about the currently authenticated user.
+     * @returns Promise resolving to user information
+     */
+    getCurrentUser(): Promise<UserDTO>;
 }
