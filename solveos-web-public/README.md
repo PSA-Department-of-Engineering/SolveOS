@@ -29,13 +29,7 @@ src/
 
 ### Environment Variables
 
-Copy `.env.example` to `.env.local` and configure:
-
-```env
-VITE_API_BASE_URL=http://localhost:8000
-VITE_AUTH_TOKEN_ENDPOINT=/api/auth/token
-VITE_REDIRECT_AFTER_LOGIN=http://localhost:3000
-```
+Copy `.env.example` to `.env.local` and configure.
 
 ## Getting Started
 
@@ -69,7 +63,5 @@ npm run build
 ### Technical Considerations
 
 - Auth transport is via cookie (`solveos_token`).
-
-- After login, redirect the browser to `VITE_REDIRECT_AFTER_LOGIN`.
-
+- After login, browser is redirected to `VITE_REDIRECT_AFTER_LOGIN`.
 - Please be aware this cookie will only work within the same hostname.

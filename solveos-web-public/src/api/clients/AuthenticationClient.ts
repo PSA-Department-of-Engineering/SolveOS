@@ -18,7 +18,6 @@ export class AuthenticationClient implements IAuthenticationClient {
     }
 
     async login(email: string, password: string): Promise<LoginResponseDTO> {
-        // OAuth2 password flow requires application/x-www-form-urlencoded
         const formData = new URLSearchParams();
         formData.append('username', email);
         formData.append('password', password);

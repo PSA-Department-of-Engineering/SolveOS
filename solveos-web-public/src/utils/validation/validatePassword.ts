@@ -3,8 +3,8 @@ export function validatePassword(password: string): string {
         return ''
     }
 
-    if (password.length < 8) {
-        return 'Password must be at least 8 characters'
+    if (password.length < 4) {
+        return 'Password must be at least 4 characters'
     }
 
     return ''
