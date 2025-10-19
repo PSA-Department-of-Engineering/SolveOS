@@ -109,6 +109,7 @@ package "Frontend" {
 }
 
 package "Backend" {
+    [Authentication Service] <<FastAPI>> as AuthS
     [Order Management Service] <<FastAPI>> as OMS
     [Customer Management Service] <<FastAPI>> as CM
     [State Engine] <<FastAPI + Transitions>> as SE
