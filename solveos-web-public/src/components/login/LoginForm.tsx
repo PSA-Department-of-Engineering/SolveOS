@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Paper } from '@mui/material'
+import { Paper, Alert } from '@mui/material'
 import { LoginFormFields } from './LoginFormFields'
 import { LoginFormActions } from './LoginFormActions'
 import { useLoginFormValidation } from '../../hooks/useLoginFormValidation'
@@ -12,7 +12,7 @@ export function LoginForm() {
     const [showPassword, setShowPassword] = useState(false)
 
     const { emailError, passwordError, isFormValid } = useLoginFormValidation(email, password)
-    const { isSubmitting, handleLogin } = useLoginSubmission()
+    const { isSubmitting, error, handleLogin } = useLoginSubmission()
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault()
@@ -24,6 +24,12 @@ export function LoginForm() {
     return (
         <Paper elevation={10} sx={loginFormStyles.paper}>
             <form onSubmit={handleSubmit} noValidate>
+                {error && (
+                    <Alert severity="error" sx={{ mb: 2 }}>
+                        {error}
+                    </Alert>
+                )}
+
                 <LoginFormFields
                     email={email}
                     password={password}
