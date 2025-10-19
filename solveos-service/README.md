@@ -36,21 +36,28 @@ Each business module is self-contained following Clean Architecture:
 
 ```
 modules/
-├── module_name/              # Bounded context
-│   ├── domain/               # Core business logic
-│   │   ├── entities/         # Business objects (e.g. User, Order)
-│   │   └── ports/            # Interfaces (contracts)
+├── module_name/                        # Bounded context
+│   ├── domain/                         # Core business logic
+│   │   ├── entities/                   # Business objects (e.g. User, Order)
+│   │   ├── ports/                      # Interfaces (contracts)
+│   │   └── exceptions/                 # Domain-specific exceptions
 │   
-│   ├── application/          # Use cases w/CQRS
-│   │   ├── commands/         # Write operations
-│   │   └── queries/          # Read operations
+│   ├── application/                    # Use cases w/CQRS
+│   │   ├── commands/                   # Write operations
+│   │   ├── queries/                    # Read operations
+│   │   └── dtos/                       # Application data transfer objects
 │   
-│   └── adapters/             # External implementations
-│       ├── inbound/          # Driving adapters (API)
-│       │   └── http/         # FastAPI endpoints
-│       └── outbound/         # Driven adapters (DB, security, etc.)
-│           ├── repositories/ # Storage implementation
-│           └── security/     # Security implementation
+│   └── adapters/                       # External implementations
+│       ├── inbound/                    # Driving adapters (API)
+│       │   └── http/         
+│       │       ├── routes/             # Thin HTTP routers
+│       │       ├── requests/           # HTTP request models
+│       │       ├── responses/          # HTTP response models
+│       │       ├── mappers/            # Layer transformations
+│       │       └── exception_handlers/
+│       └── outbound/                   # Driven adapters (DB, security, etc.)
+│           ├── repositories/           # Storage implementation
+│           └── security/               # Security implementation
 ```
 
 ## Quick Start

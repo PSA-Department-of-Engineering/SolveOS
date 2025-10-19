@@ -1,13 +1,9 @@
 from dataclasses import dataclass
 from datetime import datetime
 
-
 @dataclass
 class User:
-    """
-    User domain entity.
-    Pure business object with no framework dependencies.
-    """
+    """User domain entity."""
     email: str
     hashed_password: str
     full_name: str | None = None
