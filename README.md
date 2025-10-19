@@ -132,13 +132,54 @@ Backend ---down-> Persistence
 @enduml
 ```
 
+## 4. Backend Service
+
+The backend is implemented as a modular monolith using **Clean Architecture** (Hexagonal Pattern).
+
+### Quick Start
+
+```powershell
+cd solveos-service
+py -m pip install -r requirements.txt
+py -m fastapi dev app/main.py
+```
+
+**API Documentation**:
+- Swagger UI: http://127.0.0.1:8000/docs
+- OpenAPI Spec: http://127.0.0.1:8000/openapi.json
+
+**Test Credentials**:
+- Email: `admin@solveos.com` / Password: `secret`
+
+For detailed architecture, API reference, and development guide, see [solveos-service/README.md](solveos-service/README.md)
+
 ## 5. Tech Stack
 
-- **Frontend**: React with TypeScript and Material UI (MUI)
-  - Strong typing, shared types with backend, accessible components.
+### Frontend
+- **Framework**: React 18+ with TypeScript
+- **UI Library**: Material UI (MUI) 
+- **State Management**: React hooks, Context API
+- **API Client**: Fetch/Axios with auto-generated TypeScript types from OpenAPI
+- **Build Tool**: Vite
 
-- **Backend**: Python with FastAPI and transitions
-  - Async performance, auto API docs, state machine for workflows.
+### Backend
+- **Framework**: FastAPI 0.119+ (Python 3.11+)
+- **Architecture**: Clean Architecture / Hexagonal (Ports & Adapters)
+- **Pattern**: Modular Monolith with CQRS (Command Query Responsibility Segregation)
+- **Authentication**: OAuth2 + JWT (python-jose, passlib/bcrypt)
+- **Validation**: Pydantic 2.12+ (type-safe, OpenAPI generation)
+- **API Documentation**: Auto-generated Swagger UI + OpenAPI 3.1 spec
+- **State Machine**: transitions library (for order workflows)
+- **Async**: Full async/await support
 
-- **Database**: PostgreSQL
-  - Relational storage for orders, customers, audit logs. Alembic migrations, soft deletes.
+### Database
+- **RDBMS**: PostgreSQL
+- **ORM**: SQLAlchemy (future integration)
+- **Migrations**: Alembic
+- **Features**: Relational storage, soft deletes, audit logs
+
+### DevOps
+- **Containerization**: Docker
+- **Orchestration**: Kubernetes (k8s configs provided)
+- **CI/CD**: GitHub Actions (cicd/ directory)
+- **Infrastructure**: Terraform (for cloud resources)
